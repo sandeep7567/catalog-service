@@ -6,15 +6,19 @@ import { asyncHandler } from "../common/middlewares/utils/asyncHandler";
 import logger from "../config/logger";
 import createProductValidator from "./create-product-validator";
 import { ProductController } from "./product-controller";
+import { ProductService } from "./product-service";
+import fileUpload from "express-fileupload";
 
 const router = express.Router();
 
-const productController = new ProductController(logger);
+const productService = new ProductService();
+const productController = new ProductController(productService, logger);
 
 router.post(
     "/",
     authenticate,
     canAccess([Roles.ADMIN, Roles.MANAGER]),
+    fileUpload(),
     createProductValidator,
     asyncHandler(productController.create),
 );

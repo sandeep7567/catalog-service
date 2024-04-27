@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import { Product, PriceConfiguration, Attribute } from "./product-type";
 
-const attributeValueSchema = new mongoose.Schema({
+const attributeValueSchema = new mongoose.Schema<Attribute>({
     name: {
         type: String,
         required: true,
@@ -11,7 +12,7 @@ const attributeValueSchema = new mongoose.Schema({
     },
 });
 
-const priceConfigurationSchema = new mongoose.Schema({
+const priceConfigurationSchema = new mongoose.Schema<PriceConfiguration>({
     priceType: {
         type: String,
         enum: ["base", "additional"],
@@ -23,7 +24,7 @@ const priceConfigurationSchema = new mongoose.Schema({
     },
 });
 
-const productSchema = new mongoose.Schema(
+const productSchema = new mongoose.Schema<Product>(
     {
         name: {
             type: String,
@@ -52,7 +53,7 @@ const productSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "Category",
         },
-        isPublished: {
+        isPublish: {
             type: Boolean,
             default: false,
             required: false,
