@@ -4,6 +4,7 @@ import config from "config";
 import cookieParser from "cookie-parser";
 
 import categoryRouter from "./category/category-router";
+import productRouter from "./product/product-router";
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.get("/", (req: Request, res: Response) => {
 });
 
 app.use("/categories", categoryRouter);
+app.use("/products", productRouter);
 
 app.use(globalErrorHandler);
 
