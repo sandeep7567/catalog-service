@@ -21,6 +21,7 @@ export default [
                     )}]`,
                 );
             }
+            return true;
         }),
     body("attributes").exists().withMessage("attributes is required"),
 ];
