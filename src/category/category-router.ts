@@ -24,4 +24,12 @@ router.post(
 router.get("/", asyncHandler(categoryController.getAll));
 router.get("/:categoryId", asyncHandler(categoryController.getOne));
 
+router.patch(
+    "/:categoryId",
+    authenticate,
+    canAccess([Roles.ADMIN]),
+    categoryValidator,
+    asyncHandler(categoryController.update),
+);
+
 export default router;

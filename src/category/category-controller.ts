@@ -13,6 +13,7 @@ export class CategoryController {
         this.create = this.create.bind(this);
         this.getOne = this.getOne.bind(this);
         this.getAll = this.getAll.bind(this);
+        this.update = this.getAll.bind(this);
     }
 
     async create(req: Request, res: Response, next: NextFunction) {
@@ -57,5 +58,35 @@ export class CategoryController {
 
         this.logger.info(`Getting category`, { id: category._id });
         res.json(category);
+    }
+
+    async update(req: Request, res: Response, next: NextFunction) {
+        const { categoryId } = req.params;
+
+        if (!categoryId) {
+            return next(createHttpError(404, "Category not found"));
+        }
+
+        const result = validationResult(req);
+        if (!result.isEmpty()) {
+            return next(createHttpError(result.array()[0].msg));
+        }
+
+        const { name, attributes, priceConfiguration } = req.body as Category;
+
+        const category = await this.categoryService.update(
+            {
+                name,
+                attributes,
+                priceConfiguration,
+            },
+            categoryId,
+        );
+
+        this.logger.info(`Category updated successfully`, {
+            id: category?._id,
+        });
+
+        res.json({ id: category?._id });
     }
 }
