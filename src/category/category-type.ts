@@ -1,3 +1,5 @@
+import { Request } from "express";
+
 export interface PriceConfiguration {
     [key: string]: {
         priceType: "base" | "additional";
@@ -16,4 +18,12 @@ export interface Category {
     name: string;
     priceConfiguration: PriceConfiguration;
     attributes: Attribute[];
+}
+
+export interface AuthRequest extends Request {
+    auth: {
+        sub: string;
+        role: string;
+        id?: string;
+    };
 }
