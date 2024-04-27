@@ -8,6 +8,10 @@ export class CategoryService {
         return newCategory.save();
     }
 
+    async getAll() {
+        return await CategoryModal.find();
+    }
+
     async getById(categoryId: string) {
         return await CategoryModal.findById(categoryId);
     }
