@@ -7,4 +7,8 @@ export class CategoryService {
 
         return newCategory.save();
     }
+
+    async getById(categoryId: string) {
+        return await CategoryModal.findById(categoryId);
+    }
 }

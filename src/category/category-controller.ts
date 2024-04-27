@@ -11,6 +11,7 @@ export class CategoryController {
         private logger: Logger,
     ) {
         this.create = this.create.bind(this);
+        this.getOne = this.getOne.bind(this);
     }
 
     async create(req: Request, res: Response, next: NextFunction) {
@@ -32,5 +33,22 @@ export class CategoryController {
         });
 
         res.json({ id: category._id });
+    }
+
+    async getOne(req: Request, res: Response, next: NextFunction) {
+        const { categoryId } = req.params;
+
+        if (!categoryId) {
+            return next(createHttpError(404, "Category not found"));
+        }
+
+        const category = await this.categoryService.getById(categoryId);
+
+        if (!category) {
+            return next(createHttpError(404, "Category not found"));
+        }
+
+        this.logger.info(`Getting category`, { id: category._id });
+        res.json(category);
     }
 }
