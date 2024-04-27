@@ -1,23 +1,23 @@
-import CategoryModal from "./category-modal";
+import categoryModel from "./category-model";
 import { Category } from "./category-type";
 
 export class CategoryService {
     async create(category: Category) {
-        const newCategory = new CategoryModal(category);
+        const newCategory = new categoryModel(category);
 
         return newCategory.save();
     }
 
     async getAll() {
-        return await CategoryModal.find();
+        return await categoryModel.find();
     }
 
     async getById(categoryId: string) {
-        return await CategoryModal.findById(categoryId);
+        return await categoryModel.findById(categoryId);
     }
 
     async update(category: Category, categoryId: string) {
-        return await CategoryModal.findByIdAndUpdate(
+        return await categoryModel.findByIdAndUpdate(
             categoryId,
             {
                 $set: {
