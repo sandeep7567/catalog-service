@@ -1,5 +1,5 @@
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
-import { FileData, FileStorage } from "../types/storage";
+import { DestoryCloudImage, FileData, FileStorage } from "../types/storage";
 import config from "config";
 
 export class CloudinaryStorage implements FileStorage {
@@ -25,7 +25,11 @@ export class CloudinaryStorage implements FileStorage {
         });
     }
 
-    async delete(): Promise<void> {}
+    async delete(filename: string): Promise<DestoryCloudImage> {
+        return (await cloudinary.uploader.destroy(filename, {
+            resource_type: "image",
+        })) as DestoryCloudImage;
+    }
 
     getObjectUri(filename: string): string {
         return filename;

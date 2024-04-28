@@ -7,4 +7,16 @@ export class ProductService {
 
         return newProduct.save();
     }
+
+    async getProduct(productId: string) {
+        return await productModel.findById(productId);
+    }
+
+    async updateProduct(productId: string, product: Product) {
+        return (await productModel.findOneAndUpdate(
+            { _id: productId },
+            { $set: product },
+            { new: true },
+        )) as Product;
+    }
 }

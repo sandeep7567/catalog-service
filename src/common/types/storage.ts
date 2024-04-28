@@ -1,5 +1,9 @@
 import { UploadApiResponse } from "cloudinary";
 
+export interface DestoryCloudImage {
+    result: string;
+}
+
 export interface FileData {
     filename: string;
     fileData: ArrayBuffer;
@@ -8,6 +12,6 @@ export interface FileData {
 
 export interface FileStorage {
     upload(data: FileData): Promise<void | UploadApiResponse>;
-    delete(filename: string): Promise<void>;
+    delete(filename: string): Promise<DestoryCloudImage>;
     getObjectUri(filename: string): string;
 }
