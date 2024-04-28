@@ -8,10 +8,15 @@ import {
     PriceConfiguration,
 } from "./product-type";
 import { ProductService } from "./product-service";
+import { UploadedFile } from "express-fileupload";
+import { v4 as uuidv4 } from "uuid";
+import { FileStorage } from "../common/types/storage";
+import { UploadApiResponse } from "cloudinary";
 
 export class ProductController {
     constructor(
         private productService: ProductService,
+        private storage: FileStorage,
         private logger: Logger,
     ) {}
 
@@ -27,6 +32,15 @@ export class ProductController {
 
         const { name, description, tenantId, categoryId, isPublish } = req.body;
 
+        const image = req.files!.image as UploadedFile;
+        const imageName = uuidv4();
+
+        const imageResult = (await this.storage.upload({
+            fileData: image.data.buffer,
+            filename: imageName,
+            fileMimeType: image.mimetype,
+        })) as UploadApiResponse;
+
         const priceConfiguration = JSON.parse(
             req.body.priceConfiguration as string,
         ) as PriceConfiguration;
@@ -39,10 +53,10 @@ export class ProductController {
             description,
             tenantId,
             categoryId,
-            attributes: attributes,
+            attributes,
             priceConfiguration,
             isPublish,
-            image: "image.png",
+            image: imageResult.public_id,
         };
 
         const newProduct = await this.productService.create(product);
