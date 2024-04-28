@@ -59,7 +59,7 @@ export class ProductController {
             image: imageResult.public_id,
         };
 
-        const newProduct = await this.productService.create(product);
+        const newProduct = await this.productService.createProduct(product);
 
         this.logger.info(`Product created with ${newProduct.name}`);
 
