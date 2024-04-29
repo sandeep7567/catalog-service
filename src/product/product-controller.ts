@@ -210,6 +210,10 @@ export class ProductController {
             return next(createHttpError(404, "Product not found"));
         }
 
+        const image = await this.storage.getObjectUri(product.image as string);
+
+        product.image = image;
+
         res.json(product);
     };
 }
