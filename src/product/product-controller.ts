@@ -65,6 +65,10 @@ export class ProductController {
 
         const newProduct = await this.productService.createProduct(product);
 
+        if (!newProduct) {
+            return next(createHttpError(404, "Product not found"));
+        }
+
         this.logger.info(`Product created with ${newProduct.name}`);
 
         res.json({ id: newProduct._id });
@@ -164,7 +168,17 @@ export class ProductController {
             );
         }
 
-        const products = await this.productService.getAll(q as string, filters);
+        const products = await this.productService.getProducts(
+            q as string,
+            filters,
+            {
+                page: req.query.page ? parseInt(req.query.page as string) : 1,
+                limit: req.query.limit
+                    ? parseInt(req.query.limit as string)
+                    : 10,
+            },
+        );
+
         this.logger.info(`Getting product list`);
         res.json(products);
     };
