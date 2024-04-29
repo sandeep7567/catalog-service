@@ -216,4 +216,26 @@ export class ProductController {
 
         res.json(product);
     };
+
+    destroy = async (req: Request, res: Response, next: NextFunction) => {
+        const { productId } = req.params;
+        const { role, tenant } = (req as AuthRequest).auth;
+
+        const existingProduct = await this.productService.getProduct(productId);
+
+        if (!existingProduct) {
+            return next(createHttpError(404, "Product does not exist"));
+        }
+
+        if (role !== Roles.ADMIN) {
+            if (existingProduct.tenantId !== tenant) {
+                return next(createHttpError(403, "Forbidden for this product"));
+            }
+        }
+
+        const product = await this.productService.deleteById(productId);
+        await this.storage.delete(`${product.image}`);
+
+        res.json({ id: productId });
+    };
 }
