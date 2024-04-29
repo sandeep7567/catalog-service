@@ -1,6 +1,11 @@
 import { v2 as cloudinary, UploadApiResponse } from "cloudinary";
-import { DestoryCloudImage, FileData, FileStorage } from "../types/storage";
 import config from "config";
+import {
+    CloudinaryResourceUrlResponse,
+    DestoryCloudImage,
+    FileData,
+    FileStorage,
+} from "../types/storage";
 
 export class CloudinaryStorage implements FileStorage {
     constructor() {
@@ -11,16 +16,21 @@ export class CloudinaryStorage implements FileStorage {
             secure: true,
         });
     }
+
     async upload(data: FileData): Promise<void | UploadApiResponse> {
         const b64String = Buffer.from(data.fileData).toString("base64");
         const dataURI = "data:" + data.fileMimeType + ";base64," + b64String;
 
-        return await cloudinary.uploader.upload(dataURI, {
+        const options = {
             use_filename: true,
             unique_filename: false,
             overwrite: true,
             public_id: data.filename,
             folder: "catalog",
+        };
+
+        return await cloudinary.uploader.upload(dataURI, {
+            ...options,
             resource_type: "image",
         });
     }
@@ -31,7 +41,10 @@ export class CloudinaryStorage implements FileStorage {
         })) as DestoryCloudImage;
     }
 
-    getObjectUri(filename: string): string {
-        return filename;
+    async getObjectUri(filename: string): Promise<string> {
+        const result = (await cloudinary.api.resource(
+            filename,
+        )) as CloudinaryResourceUrlResponse;
+        return result.secure_url;
     }
 }

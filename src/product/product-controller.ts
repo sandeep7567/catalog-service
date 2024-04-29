@@ -7,6 +7,7 @@ import {
     CreateProductRequest,
     Filter,
     PriceConfiguration,
+    Product,
 } from "./product-type";
 import { ProductService } from "./product-service";
 import { UploadedFile } from "express-fileupload";
@@ -179,7 +180,36 @@ export class ProductController {
             },
         );
 
+        const finalProducts = await Promise.all(
+            (products.data as Product[]).map(async (product: Product) => {
+                const image = await this.storage.getObjectUri(
+                    product?.image as string,
+                );
+                return {
+                    ...product,
+                    image,
+                };
+            }),
+        );
+
         this.logger.info(`Getting product list`);
-        res.json(products);
+        res.json({
+            data: finalProducts,
+            total: products.total,
+            pageSize: products.pageSize,
+            currentPage: products.page,
+        });
+    };
+
+    getOne = async (req: Request, res: Response, next: NextFunction) => {
+        const { productId } = req.params;
+
+        const product = await this.productService.getProduct(productId);
+
+        if (!product) {
+            return next(createHttpError(404, "Product not found"));
+        }
+
+        res.json(product);
     };
 }
