@@ -12,6 +12,8 @@ import { UploadedFile } from "express-fileupload";
 import { v4 as uuidv4 } from "uuid";
 import { FileStorage } from "../common/types/storage";
 import { UploadApiResponse } from "cloudinary";
+import { AuthRequest } from "../category/category-type";
+import { Roles } from "../common/constant";
 
 export class ProductController {
     constructor(
@@ -82,6 +84,14 @@ export class ProductController {
 
         if (!existingProduct) {
             return next(createHttpError(404, "Product not found"));
+        }
+
+        if ((req as AuthRequest).auth.role !== Roles.ADMIN) {
+            const tenant = (req as AuthRequest).auth.tenant;
+
+            if (existingProduct.tenantId !== tenant) {
+                return next(createHttpError(403, "Forbidden for this product"));
+            }
         }
 
         let newImage: string | undefined;
