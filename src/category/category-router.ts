@@ -32,6 +32,11 @@ router.patch(
     asyncHandler(categoryController.update),
 );
 
-router.delete("/:categoryId", asyncHandler(categoryController.destroy));
+router.delete(
+    "/:categoryId",
+    authenticate,
+    canAccess([Roles.ADMIN]),
+    asyncHandler(categoryController.destroy),
+);
 
 export default router;
