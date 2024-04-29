@@ -23,7 +23,11 @@ export interface Product {
     priceConfiguration: PriceConfiguration | string;
     attributes: Attribute[] | string;
 }
-
 export interface CreateProductRequest extends Request {
     body: Product;
+}
+export interface Filter {
+    tenantId?: string;
+    categoryId?: mongoose.Types.ObjectId;
+    isPublish?: boolean;
 }

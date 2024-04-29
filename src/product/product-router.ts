@@ -54,4 +54,6 @@ router.put(
     asyncHandler(productController.update),
 );
 
+router.get("/", asyncHandler(productController.getAll));
+
 export default router;
