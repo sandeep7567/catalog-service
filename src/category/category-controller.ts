@@ -13,7 +13,8 @@ export class CategoryController {
         this.create = this.create.bind(this);
         this.getOne = this.getOne.bind(this);
         this.getAll = this.getAll.bind(this);
-        this.update = this.getAll.bind(this);
+        this.update = this.update.bind(this);
+        this.destroy = this.destroy.bind(this);
     }
 
     async create(req: Request, res: Response, next: NextFunction) {
@@ -88,5 +89,18 @@ export class CategoryController {
         });
 
         res.json({ id: category?._id });
+    }
+
+    async destroy(req: Request, res: Response, next: NextFunction) {
+        const { categoryId } = req.params;
+
+        if (!categoryId) {
+            return next(createHttpError(404, "Category not found"));
+        }
+
+        await this.categoryService.deleteById(categoryId);
+
+        this.logger.info(`Category deleted successfully`, { id: categoryId });
+        res.json({ id: categoryId });
     }
 }

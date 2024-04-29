@@ -32,4 +32,6 @@ router.patch(
     asyncHandler(categoryController.update),
 );
 
+router.delete("/:categoryId", asyncHandler(categoryController.destroy));
+
 export default router;
