@@ -127,10 +127,10 @@ export class ToppingController {
     };
 
     getAll = async (req: Request, res: Response) => {
-        const toppings: Topping[] = await this.toppingService.getToppings();
+        const toppings = await this.toppingService.getToppings();
 
         const formmatedTopping = await Promise.all(
-            toppings.map(async (topping: Topping) => {
+            (toppings as Topping[]).map(async (topping: Topping) => {
                 return {
                     _id: topping._id,
                     name: topping.name,
@@ -158,5 +158,37 @@ export class ToppingController {
         topping.image = await this.storage.getObjectUri(topping.image!);
 
         res.json(topping);
+    };
+
+    destroy = async (req: Request, res: Response, next: NextFunction) => {
+        const result = validationResult(req);
+        if (!result.isEmpty()) {
+            return next(createHttpError(result.array()[0].msg));
+        }
+
+        const { toppingId } = req.params;
+
+        const existingTopping = await this.toppingService.getTopping(toppingId);
+
+        if (!existingTopping) {
+            return next(createHttpError(404, "Topping not found"));
+        }
+
+        if ((req as AuthRequest).auth.role !== Roles.ADMIN) {
+            const tenant = (req as AuthRequest).auth.tenant;
+
+            if (existingTopping.tenantId !== tenant) {
+                return next(
+                    createHttpError(403, "Forbidden for access this topping"),
+                );
+            }
+        }
+
+        const topping = await this.toppingService.deleteById(toppingId);
+
+        await this.storage.delete(`${topping?.image}`);
+
+        this.logger.info("Successfully deleted", { id: topping?._id });
+        res.json({ id: toppingId });
     };
 }

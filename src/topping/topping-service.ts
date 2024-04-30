@@ -9,23 +9,27 @@ export class ToppingService {
     }
 
     async getTopping(toppingId: string): Promise<Topping | null> {
-        return await toppingModel.findById(toppingId);
+        return (await toppingModel.findById(toppingId)) as Topping;
     }
 
     async updateTopping(
         toppingId: string,
         topping: Topping,
     ): Promise<Topping | null> {
-        return await toppingModel.findByIdAndUpdate(
+        return (await toppingModel.findByIdAndUpdate(
             toppingId,
             { $set: topping },
             {
                 new: true,
             },
-        );
+        )) as Topping;
     }
 
-    async getToppings(): Promise<Topping[]> {
+    async getToppings(): Promise<Topping[] | null> {
         return await toppingModel.find();
+    }
+
+    async deleteById(toppingId: string): Promise<Topping | null> {
+        return (await toppingModel.findByIdAndDelete(toppingId)) as Topping;
     }
 }
