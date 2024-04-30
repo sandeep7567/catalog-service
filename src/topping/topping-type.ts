@@ -1,7 +1,8 @@
 import { Request } from "express";
-import { Document } from "mongoose";
+import mongoose from "mongoose";
 
-export interface Topping extends Document {
+export interface Topping {
+    _id?: mongoose.Types.ObjectId;
     name: string;
     price: number;
     image?: string;
