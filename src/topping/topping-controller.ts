@@ -54,6 +54,6 @@ export class ToppingController {
             id: newTopping?._id,
         });
 
-        res.json({ id: newTopping?._id });
+        res.status(201).json({ id: newTopping?._id });
     };
 }
