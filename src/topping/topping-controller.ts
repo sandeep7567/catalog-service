@@ -4,12 +4,13 @@ import { validationResult } from "express-validator";
 import createHttpError from "http-errors";
 import { Logger } from "winston";
 import { ToppingService } from "./topping-service";
-import { CreateToppingRequest } from "./topping-type";
+import { CreateToppingRequest, Topping } from "./topping-type";
 import { FileStorage } from "../common/types/storage";
 import { v4 as uuidv4 } from "uuid";
 import { UploadApiResponse } from "cloudinary";
 import { AuthRequest } from "../category/category-type";
 import { Roles } from "../common/constant";
+import { Request } from "express-jwt";
 
 export class ToppingController {
     constructor(
@@ -123,5 +124,25 @@ export class ToppingController {
         this.logger.info(`Product created with ${toppingToUpdate.name}`);
 
         res.json({ id: existingTopping._id });
+    };
+
+    getAll = async (req: Request, res: Response) => {
+        const toppings: Topping[] = await this.toppingService.getToppings();
+
+        const formmatedTopping = await Promise.all(
+            toppings.map(async (topping: Topping) => {
+                return {
+                    _id: topping._id,
+                    name: topping.name,
+                    price: topping.price,
+                    tenantId: topping.tenantId,
+                    image: await this.storage.getObjectUri(
+                        topping?.image as string,
+                    ),
+                };
+            }),
+        );
+        this.logger.info("Get all toppings");
+        res.json(formmatedTopping);
     };
 }

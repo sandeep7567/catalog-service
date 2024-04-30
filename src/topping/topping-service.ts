@@ -7,9 +7,11 @@ export class ToppingService {
 
         return newTopping.save();
     }
+
     async getTopping(toppingId: string): Promise<Topping | null> {
         return await toppingModel.findById(toppingId);
     }
+
     async updateTopping(
         toppingId: string,
         topping: Topping,
@@ -21,5 +23,9 @@ export class ToppingService {
                 new: true,
             },
         );
+    }
+
+    async getToppings(): Promise<Topping[]> {
+        return await toppingModel.find();
     }
 }
