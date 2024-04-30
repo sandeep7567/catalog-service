@@ -56,4 +56,6 @@ router.put(
 
 router.get("/", asyncHandler(toppingController.getAll));
 
+router.get("/:toppingId", asyncHandler(toppingController.getOne));
+
 export default router;
