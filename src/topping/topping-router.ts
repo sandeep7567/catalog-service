@@ -10,6 +10,7 @@ import { CloudinaryStorage } from "./../common/services/cloudinaryStorage";
 import createToppingValidator from "./create-topping-validator";
 import { ToppingController } from "./topping-controller";
 import { ToppingService } from "./topping-service";
+import updateToppingValidator from "./update-topping-validator";
 
 const router = express.Router();
 
@@ -35,6 +36,22 @@ router.post(
     }),
     createToppingValidator,
     asyncHandler(toppingController.create),
+);
+
+router.put(
+    "/:toppingId",
+    authenticate,
+    canAccess([Roles.ADMIN, Roles.MANAGER]),
+    fileUpload({
+        limits: { fieldSize: 500 * 1024 }, // 500kb
+        abortOnLimit: true,
+        limitHandler: (req, res, next) => {
+            const error = createHttpError(400, "File size exceeds the limit");
+            next(error);
+        },
+    }),
+    updateToppingValidator,
+    asyncHandler(toppingController.update),
 );
 
 export default router;

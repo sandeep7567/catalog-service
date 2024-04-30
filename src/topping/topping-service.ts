@@ -7,4 +7,19 @@ export class ToppingService {
 
         return newTopping.save();
     }
+    async getTopping(toppingId: string): Promise<Topping | null> {
+        return await toppingModel.findById(toppingId);
+    }
+    async updateTopping(
+        toppingId: string,
+        topping: Topping,
+    ): Promise<Topping | null> {
+        return await toppingModel.findByIdAndUpdate(
+            toppingId,
+            { $set: topping },
+            {
+                new: true,
+            },
+        );
+    }
 }
