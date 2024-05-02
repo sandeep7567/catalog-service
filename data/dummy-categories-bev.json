@@ -6,7 +6,7 @@
             "availableOptions": ["100ml", "330ml", "500ml"]
         },
         "Chilling": {
-            "priceType": "aditional",
+            "priceType": "additional",
             "availableOptions": ["Warm", "Cold"]
         }
     },
