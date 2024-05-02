@@ -63,7 +63,7 @@ export class ProductService {
             },
         ]);
 
-        return productModel.aggregatePaginate(aggregate, {
+        return await productModel.aggregatePaginate(aggregate, {
             ...paginateQuery,
             customLabels: paginationLabels,
         });
