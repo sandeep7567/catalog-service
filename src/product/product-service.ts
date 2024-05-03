@@ -41,6 +41,9 @@ export class ProductService {
                 $match: matchQuery,
             },
             {
+                $sort: { createdAt: -1 },
+            },
+            {
                 $lookup: {
                     from: "categories",
                     localField: "categoryId",

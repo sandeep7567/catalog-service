@@ -152,7 +152,7 @@ export class ProductController {
         res.json({ id: existingProduct._id });
     };
 
-    getAll = async (req: Request, res: Response) => {
+    getAll = async (req: Request, res: Response, next: NextFunction) => {
         const { q, tenantId, categoryId, isPublish } = req.query;
 
         const filters: Filter = {};
@@ -181,6 +181,10 @@ export class ProductController {
                     : 10,
             },
         );
+
+        if (!products) {
+            return next(createHttpError(404, "Product not found"));
+        }
 
         const finalProducts = await Promise.all(
             (products.data as Product[]).map(async (product: Product) => {
