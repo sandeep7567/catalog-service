@@ -42,9 +42,14 @@ export class CloudinaryStorage implements FileStorage {
     }
 
     async getObjectUri(filename: string): Promise<string> {
+        // const cloud_name: string = config.get("cloudinary.cloud_name");
+
         const result = (await cloudinary.api.resource(
             filename,
         )) as CloudinaryResourceUrlResponse;
+
+        // const secure_url = `https://res.cloudinary.com/${cloud_name}/image/upload/${filename}.png`
+
         return result.secure_url;
     }
 }
