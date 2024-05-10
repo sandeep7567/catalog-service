@@ -11,6 +11,7 @@ import { UploadApiResponse } from "cloudinary";
 import { AuthRequest } from "../category/category-type";
 import { Roles } from "../common/constant";
 import { Request } from "express-jwt";
+import { Filter } from "../product/product-type";
 
 export class ToppingController {
     constructor(
@@ -127,7 +128,14 @@ export class ToppingController {
     };
 
     getAll = async (req: Request, res: Response) => {
-        const toppings = await this.toppingService.getToppings();
+        const { tenantId } = req.query;
+
+        // console.log(tenantId);
+        const filters: Filter = {};
+
+        if (tenantId) filters.tenantId = String(tenantId);
+
+        const toppings = await this.toppingService.getToppings(filters);
 
         const formmatedTopping = await Promise.all(
             (toppings as Topping[]).map(async (topping: Topping) => {

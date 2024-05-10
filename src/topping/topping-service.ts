@@ -1,3 +1,4 @@
+import { Filter } from "../product/product-type";
 import toppingModel from "./topping-model";
 import { Topping } from "./topping-type";
 
@@ -25,8 +26,13 @@ export class ToppingService {
         )) as Topping;
     }
 
-    async getToppings(): Promise<Topping[] | null> {
-        return await toppingModel.find();
+    async getToppings(filters: Filter): Promise<Topping[] | null> {
+        // const { tenantId } = filters;
+        const matchQuery = {
+            ...filters,
+        };
+
+        return await toppingModel.find(matchQuery);
     }
 
     async deleteById(toppingId: string): Promise<Topping | null> {
